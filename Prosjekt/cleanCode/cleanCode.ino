@@ -59,11 +59,12 @@ void prepareValues(){
 
 void waitToPress(){
 
-    while(millis() < wait && digitalRead(SW1)==HIGH && digitalRead(SW2)==HIGH){
-  }
 /* setter at hvis noen trykker før tiden får du en fault og vil
 da ikke gå inn i if løkken, men heller gå til else, hvor du får
 buzzeren vil gi deg fault lyden*/
+
+    while(millis() < wait && digitalRead(SW1)==HIGH && digitalRead(SW2)==HIGH){
+  }
   if(digitalRead(SW1)==LOW)fault = LED1;
   if(digitalRead(SW2)==LOW)fault = LED2;
   digitalWrite(redLED,LOW); 
@@ -72,10 +73,11 @@ buzzeren vil gi deg fault lyden*/
 
 void runGame(){
 
-    if(fault == 0){ 
- /* gå inn i denne hvis du ikke har fått en fault, 
+ /* går inn i denne hvis du ikke har fått en fault, 
  med eks. feiltrykk den tilfeldige wait tiden må også ha være
  over for å gå ut av while løkken først*/
+
+    if(fault == 0){ 
     digitalWrite(greenLED,HIGH);  //setter lyset til grønt
     while(digitalRead(SW1)==HIGH && digitalRead(SW2)==HIGH){ 
     } // venter til en av knappene er trykkt
@@ -87,8 +89,7 @@ void runGame(){
     }
     
     for(int k = 0; k < 5; k++){ 
-      /*spiller av vinnerlyd og blinker grønt, og spilleren 
-      som vant sitt lys blinker. dette kjører 5 ganger*/
+      /*buzzer og lys for vinn*/
       tone(buzzerPin,(winnerBeep+(k*20))); 
       digitalWrite(greenLED,HIGH);
       digitalWrite(winner,HIGH);
@@ -100,8 +101,7 @@ void runGame(){
     noTone(buzzerPin); // nullstiller lyden på buzzer
   }
   
-  else{ /* lys blinker rødt, og den som trykte sitt lys lyser
-  og får fault lyden*/
+  else{ /* buzzer og lys for fault*/
     tone(buzzerPin,faultBeep,500);
     for(int k = 0; k < 10; k++){
       digitalWrite(redLED,HIGH);
@@ -123,5 +123,13 @@ void loop(){
 
   runGame();
 
-  
+
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////     Endringer    ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+/* La først alle delene hoveddelene av loopen inn i egne funksjoner,
+laget mer konkret kommentering av koden,
+*/
