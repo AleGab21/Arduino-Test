@@ -81,38 +81,40 @@ void calibrateSensors()
   motors.setSpeeds(0, 0);
 }
 
-long tot_countsLeft = 0;
-long tot_countsRight = 0;
 
-void encoderData()
+long tot_countsLeft = 0;
+long tot_countsRight = 0; // definerer totalen for enkodertellern
+
+void speedometer()
 {
-  static unsigned long lastDisplayTime;
+  static unsigned long lastDisplayTime;  
+  
 
   if ((uint8_t)(millis() - lastDisplayTime) >= 100)
   {
       
     int intervall = 0;
-    int displayTimer = 0;
+    int displayTimer = 0; 
     
 
     long countsLeft = encoders.getCountsAndResetLeft();
-    long countsRight = encoders.getCountsAndResetRight();
+    long countsRight = encoders.getCountsAndResetRight(); // teller enkoderdataen og så resetter verdien ( for å ungå overflyt)
 
     tot_countsLeft += countsLeft;
-    tot_countsRight += countsRight;
+    tot_countsRight += countsRight; //legger inn enkoderdataen i total variabelen 
 
-    double currentPosition = (tot_countsLeft+tot_countsRight)/2;
+    double currentPosition = (tot_countsLeft+tot_countsRight)/2; //finner gjennomsnittet av høyre og venstre side
 
-    float deltaMillis = millis() - lastDisplayTime;
+    float deltaMillis = millis() - lastDisplayTime; // finner endring i tid
 
-    float deltaPosition = (countsLeft + countsRight)/2;
+    float deltaPosition = (countsLeft + countsRight)/2; // finner endringen i posisjon
 
-    float speed = ((deltaPosition*11250))/ (900*deltaMillis);
+    float speed = ((deltaPosition*11250))/ (900*deltaMillis); // finner fart ( ganger med faktorer, ut fra beregning for avtand per enkoder verdi)
     
 
-    float distance = currentPosition*11250/900000;
+    float distance = currentPosition*11250/900000; // finner totale distansen kjørt med å bruke total verdiene
     
-      display.setLayout11x4();
+      display.setLayout11x4(); // setter opp display 
       display.gotoXY(2, 0.4);
       display.print(speed);
       display.gotoXY(1, 1);
@@ -122,7 +124,7 @@ void encoderData()
     // switch case med variabel som endres med tidsintervaller
     //display gjennomsnittfart, toppfart..... 
 
-    lastPosition = currentPosition; 
+    lastPosition = currentPosition;  // oppdaterer/nullstiller verdier
     lastDisplayTime = millis();
     countsLeft, countsRight = 0,0;
 
@@ -144,23 +146,22 @@ void loop()
 {
 
     
-    int16_t position = lineSensors.readLine(lineSensorValues); 
+    int16_t position = lineSensors.readLine(lineSensorValues); //leser av sensorverdier 
    
 
-   // Serial.println(position);
-
-    encoderData();
+    speedometer();
 
     
 
     bool buttonPress = buttonA.getSingleDebouncedPress();
-    bool calibrateButton = buttonB.isPressed();
+    bool calibrateButton = buttonB.isPressed(); // definerer knappetrykk
 
-    if(calibrateButton){
+
+    if(calibrateButton){ //kalibreringsknapp 
         calibrateSensors();     
      }
 
-    if (buttonPress && state == pause_state)
+    if (buttonPress && state == pause_state) // på knapp
     {
         state = run_state;
 
@@ -169,14 +170,14 @@ void loop()
         
     }
 
-    if (buttonPress && state == run_state)
+    if (buttonPress && state == run_state) // setter programmet på pause igjen
     {
         state = pause_state;
 
         motors.setSpeeds(0,0);
     }
 
-    if (state == run_state)
+    if (state == run_state) //linjefølgings regulering  
     {   
       if(1800 < position < 2200){
 
