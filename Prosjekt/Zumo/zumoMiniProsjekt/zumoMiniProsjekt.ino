@@ -164,38 +164,12 @@ void calibrateCar(){
 
 }
 
-/*
-void batteryState{
-  avhenging av fast, avstand og tid 
 
-  
-}*/
+void orgLineFollow(){
 
-//////////////////////////////////////////////////////////
-/////////////////////  Loop  /////////////////////////////
-//////////////////////////////////////////////////////////
+    int16_t position = lineSensors.readLine(lineSensorValues); //leser av sensorverdier
 
-void loop()
-{
-
-    
-    int16_t position = lineSensors.readLine(lineSensorValues); //leser av sensorverdier 
-   
-
-    speedometer();
-
-    powerButton();
-
-    calibrateCar();
-    
-
-    
-   
-    
-
-    if (state == run_state) //linjefølgings regulering  
-    {   
-      if(1800 < position < 2200){
+    if(1800 < position < 2200){
 
         motors.setSpeeds(motorSpeed, motorSpeed);
 
@@ -225,10 +199,56 @@ void loop()
 
         motors.setSpeeds(motorSpeed*0.2, motorSpeed*1.8);
 
-       }
-      
-       
-       
+       }         
     
+
+}
+
+/*
+void batteryState{
+  avhenging av fart, avstand og tid 
+
+  
+}*/
+
+/*
+
+void squareRun(){
+
+  
+
+}
+
+*/
+
+//////////////////////////////////////////////////////////
+/////////////////////  Loop  /////////////////////////////
+//////////////////////////////////////////////////////////
+
+void loop()
+{
+
+    speedometer();
+
+    powerButton();
+
+    calibrateCar();
+
+    switch (state)
+    {
+    case run_state:
+        orgLineFollow();
+        break;
+    
+    /*case square_state:
+        squareRun()
+    case circle_state:
+        circleRun()
+    case backForth_state:
+        backForthRun()
+    case ski_state
+        skiRun() */
+    default:
+        break;
     }
 }
