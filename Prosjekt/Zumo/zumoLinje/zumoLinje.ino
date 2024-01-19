@@ -30,7 +30,7 @@ Zumo32U4OLED display;
 int16_t lastError = 0;
 State state = pause_state;
 unsigned long previousMillis = 0;
-int motorSpeed = 300; 
+int motorSpeed = 200; 
 String tekst[6] = {"Ready", "Set", "GO!", "DONE", ">w<", "Distance: "};
 
 //////////////////////////////////////////////////////////
@@ -211,15 +211,69 @@ void batteryState{
   
 }*/
 
-/*
+
+void forward(long count)
+{
+    encoders.getCountsAndResetLeft();
+    encoders.getCountsAndResetRight();
+
+    long countsLeft = 0;
+    long countsRight = 0;
+    motors.setSpeeds(motorSpeed, motorSpeed);
+    while (countsLeft < count)
+    {
+        countsLeft += encoders.getCountsAndResetLeft();
+        countsRight += encoders.getCountsAndResetRight();
+        display.gotoXY(1, 1);
+        display.print(countsLeft);
+        display.print(" ");
+        delay(2);
+    };
+
+    motors.setSpeeds(0, 0);
+}
+
+void turnRight(long count)
+{
+    encoders.getCountsAndResetLeft();
+    encoders.getCountsAndResetRight();
+
+    long countsLeft = 0;
+    long countsRight = 0;
+    motors.setSpeeds(motorSpeed, -motorSpeed);
+    while (countsLeft < count)
+    {
+        countsLeft += encoders.getCountsAndResetLeft();
+        countsRight -= encoders.getCountsAndResetRight();
+        display.gotoXY(1, 1);
+        display.print(countsLeft);
+        display.print(" ");
+        delay(2);
+    };
+
+    motors.setSpeeds(0, 0);
+}
+
 
 void squareRun(){
+  
+  for (int i = 0; i < 4; i++)
+  {
+   forward(500);
 
+   while ( i < 3)
+   {
+    turnRight(100);
+    
+   }
+   
+  
+  }
   
 
 }
 
-*/
+
 
 //////////////////////////////////////////////////////////
 /////////////////////  Loop  /////////////////////////////
